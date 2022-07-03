@@ -6,7 +6,7 @@ pub const DOUBLE_WILDCARD: &'static str = "**";
 
 lazy_static! {
     static ref RGX_TOPIC: Regex =
-        Regex::new(r"^(([a-z0-9_]+|\*|\*\*)/)*([a-z0-9_]+|\*|\*\*)$").unwrap();
+        Regex::new(r"^(([A-Za-z0-9_-]+|\*|\*\*)/)*([A-Za-z0-9_-]+|\*|\*\*)$").unwrap();
 }
 
 #[test]
@@ -35,6 +35,16 @@ fn test_rgx_topic() {
     assert!(RGX_TOPIC.is_match("a/**"));
     assert!(RGX_TOPIC.is_match("**/*"));
     assert!(RGX_TOPIC.is_match("*/**"));
+
+    assert!(RGX_TOPIC.is_match("A/B"));
+    assert!(RGX_TOPIC.is_match("a/B"));
+    assert!(RGX_TOPIC.is_match("A/b"));
+    assert!(RGX_TOPIC.is_match("a/B-C"));
+    assert!(RGX_TOPIC.is_match("a/B-c"));
+    assert!(RGX_TOPIC.is_match("A/b-C"));
+    assert!(RGX_TOPIC.is_match("A/b/c"));
+    assert!(RGX_TOPIC.is_match("A/B/c"));
+    assert!(RGX_TOPIC.is_match("A/b/C"));
 }
 
 pub(crate) fn parse_topic(topic_str: &str) -> BusResult<Vec<&str>> {
