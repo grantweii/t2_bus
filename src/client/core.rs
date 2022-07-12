@@ -103,6 +103,21 @@ where
             tokio::select! {
                 // message from server
                 msg = self.transport.next() => {
+                    match &msg {
+                        Some(res) => {
+                            match res {
+                                Ok(success) => {
+                                    println!("success msg");
+                                },
+                                Err(why) => {
+                                    println!("error msg {}", why);
+                                },
+                            }
+                        },
+                        None => {
+                            println!("resp NONE");
+                        },
+                    }
                     self.after_receive(msg.ok_or(BusError::ChannelClosed)??).await?;
                 },
                 // message from client
