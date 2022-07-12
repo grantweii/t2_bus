@@ -142,11 +142,11 @@ where
     async fn send(&mut self, task: Task) -> BusResult<()> {
         let msg = self.before_send(task)?;
 
-        // #[cfg(debug_assertions)]
-        // {
-        //     let log_msg = crate::debug::client_msg_to_string(&msg);
-        //     println!("[B] <-- [?] {}", &log_msg);
-        // }
+        #[cfg(debug_assertions)]
+        {
+            let log_msg = crate::debug::client_msg_to_string(&msg);
+            println!("[B] <-- [?] {}", &log_msg);
+        }
 
         self.transport.send(msg).await?;
         Ok(())
@@ -226,11 +226,11 @@ where
     }
 
     async fn after_receive(&mut self, msg: Msg<ProtocolServer>) -> BusResult<()> {
-        // #[cfg(debug_assertions)]
-        // {
-        //     let log_msg = crate::debug::server_msg_to_string(&msg);
-        //     println!("[B] --> [?] {}", &log_msg);
-        // }
+        #[cfg(debug_assertions)]
+        {
+            let log_msg = crate::debug::server_msg_to_string(&msg);
+            println!("[B] --> [?] {}", &log_msg);
+        }
 
         match msg.content {
             ProtocolServer::Ack(payload) => {

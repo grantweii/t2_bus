@@ -145,11 +145,11 @@ impl Core {
     }
 
     fn process_msg(&mut self, client_id: u32, msg: Msg<ProtocolClient>) -> BusResult<bool> {
-        // #[cfg(debug_assertions)]
-        // {
-        //     let log_msg = crate::debug::client_msg_to_string(&msg);
-        //     println!("[{}] --> [B] {}", client_id, &log_msg);
-        // }
+        #[cfg(debug_assertions)]
+        {
+            let log_msg = crate::debug::client_msg_to_string(&msg);
+            println!("[{}] --> [B] {}", client_id, &log_msg);
+        }
 
         let stop = if let ProtocolClient::Stop = msg.content {
             true
@@ -291,11 +291,11 @@ impl Core {
     fn deliver(&mut self, client_id: ClientId, payload: ProtocolServer) -> BusResult<MsgId> {
         let msg = self.msg(payload);
 
-        // #[cfg(debug_assertions)]
-        // {
-        //     let log_msg = crate::debug::server_msg_to_string(&msg);
-        //     println!("[{}] <-- [B] {}", client_id, &log_msg);
-        // }
+        #[cfg(debug_assertions)]
+        {
+            let log_msg = crate::debug::server_msg_to_string(&msg);
+            println!("[{}] <-- [B] {}", client_id, &log_msg);
+        }
 
         let client_opt = self.protocol_server_senders.get_mut(&client_id);
         match client_opt {
