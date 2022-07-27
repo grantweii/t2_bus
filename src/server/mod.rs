@@ -6,6 +6,7 @@ use crate::directory::*;
 use crate::protocol::*;
 use crate::topic::*;
 use crate::err::*;
+use log::{info, warn, error};
 use std::collections::HashMap;
 use tokio::time::Duration;
 use tokio::{
@@ -122,15 +123,15 @@ impl Core {
 
         tokio::spawn(async move {
             #[cfg(debug_assertions)]
-            println!("Client #{} connected", client_id);
+            info!("Client #{} connected", client_id);
 
             if let Err(e) = client.serve().await {
                 #[cfg(debug_assertions)]
-                println!("Client #{}: Error: {:?}", client_id, e);
+                error!("Client #{}: Error: {:?}", client_id, e);
             }
 
             #[cfg(debug_assertions)]
-            println!("Client #{} disconnected", client_id);
+            warn!("Client #{} disconnected", client_id);
         });
 
         self.protocol_server_senders
@@ -279,6 +280,7 @@ impl Core {
 
         for client_id in &subscriber_ids {
             if *client_id == 0 {
+                error!("Received kill message");
                 panic!("Received kill message"); // TODO make nicer
             }
 
@@ -309,7 +311,7 @@ impl Core {
                         self.deregister_client(client_id)?;
 
                         #[cfg(debug_assertions)]
-                        println!("Client #{} message delivery failed: {}", client_id, &e);
+                        error!("Client #{} message delivery failed: {}", client_id, &e);
 
                         Err(BusError::DeliveryFailed(client_id, e.to_string()))
                     }
